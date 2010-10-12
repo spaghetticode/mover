@@ -10,5 +10,11 @@ class NilClass
   end
 end
 
-class FileAdapter
+module FileAdapter
+  SPLITTER =  "\n"
+  
+  def self.convert(files)
+    filenames = files.split(SPLITTER)
+    filenames.map {|f| "#{f}.jpg".strip}
+  end
 end
