@@ -1,4 +1,3 @@
-require File.dirname(__FILE__) + '/../movable_file'
 describe MovableFile do
   
   def current_path

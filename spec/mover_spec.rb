@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + '/../mover.rb'
-
 describe Mover do
   def basename_path
     File.dirname(__FILE__)

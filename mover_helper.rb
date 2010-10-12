@@ -1,5 +1,7 @@
 class String
-  alias blank? empty?
+  def blank?
+    gsub(/\s+/, '').empty?
+  end
 end
 
 class NilClass
