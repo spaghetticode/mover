@@ -24,6 +24,7 @@ class Mover
   private
   
   def recursive_mv(dir)
+    dir.gsub!('\\', '/') # win fix
     Dir["#{dir}/*"].each do |entry|
       if File.file?(entry)
         basename = File.basename(entry)

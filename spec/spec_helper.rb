@@ -1,5 +1,4 @@
 require 'rspec'
-require 'ruby-debug'
 
 require File.dirname(__FILE__) + '/../mover'
 

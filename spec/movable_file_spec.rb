@@ -5,12 +5,21 @@ describe MovableFile do
   end
   
   before do
-    @source_file, @target, @second_target = "#{current_path}/origin/test.txt", "#{current_path}/target", "#{current_path}/second_target"
-    system "touch #{@source_file}"
+    @first_file = 'test.txt'
+    @second_file = 'sample.pdf'
+    @source_file, @target, @second_target = "#{current_path}/origin/#{@first_file}", "#{current_path}/target", "#{current_path}/second_target"
+    FileUtils.touch @source_file
     @file = MovableFile.new(@source_file, @target, @second_target)
-    FileUtils.rm(@file.target_file) if File.file?(@file.target_file)
-    FileUtils.rm(@file.second_target_file) if File.file?(@file.second_target_file)    
     File.file?(@file.source_file).should be_true
+  end
+  
+  after do
+    [@target, @second_target].each do |dir|
+      [@first_file, @second_file].each do |file|
+        path = File.join(dir, file)
+        FileUtils.rm(path) if File.exist?(path)
+      end
+    end
   end
   
   it 'should set all attributes' do

@@ -9,15 +9,8 @@ describe Mover do
     @nested_file_path = File.join(@source_dir, 'nested/down', @nested_file)
     # creo i file:
     [@file_path, @not_moved_file_path, @nested_file_path].each do |file|
-      system "touch #{file}"
+      FileUtils.touch file
       File.file?(file).should be_true
-    end
-    # pulisco le cartelle di destinazione:
-    [@target_dir, @second_target_dir].each do |dir|
-      [@file, @not_moved_file, @nested_file].each do |file|
-        path = File.join(dir, file)
-        system "rm #{path}" if File.file?(path)
-      end
     end
   end
   
@@ -27,6 +20,15 @@ describe Mover do
     @nested_file = 'nested.jpg'
     @source_dir, @target_dir, @second_target_dir = "#{basename_path}/origin", "#{basename_path}/target", "#{basename_path}/second_target"
     prepare_fs
+  end
+  
+  after do
+    [@target_dir, @second_target_dir].each do |dir|
+      [@file, @not_moved_file, @nested_file].each do |file|
+        path = File.join(dir, file)
+        FileUtils.rm(path) if File.file?(path)
+      end
+    end
   end
   
   context 'a mover with both target directories set' do
