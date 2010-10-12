@@ -7,13 +7,10 @@ describe MovableFile do
   before do
     @source_file, @target, @second_target = "#{current_path}/origin/test.txt", "#{current_path}/target", "#{current_path}/second_target"
     system "touch #{@source_file}"
-    @not_moved_file = "#{current_path}/origin/not_moved.pdf"
-    system "touch #{@not_moved_file}"
     @file = MovableFile.new(@source_file, @target, @second_target)
     FileUtils.rm(@file.target_file) if File.file?(@file.target_file)
     FileUtils.rm(@file.second_target_file) if File.file?(@file.second_target_file)    
     File.file?(@file.source_file).should be_true
-    File.file?(@not_moved_file).should be_true
   end
   
   it 'should set all attributes' do
@@ -79,11 +76,6 @@ describe MovableFile do
     it 'should remove original file' do
       @file.mv
       File.file?(@file.source_file).should be_false      
-    end
-    
-    it 'should not copy file not included in list' do
-      @file.mv
-      File.file?(@not_moved_file).should be_true
     end
   end
 end

@@ -71,9 +71,9 @@ class CopierFrame < Frame
       files = FileAdapter.convert(@files.value)
       copier = Mover.new(files, @source.value, @first_dest.value, @second_dest.value)
       copier.mv
-      moved = copier.moved.join(SPLITTER)
-      not_moved = copier.not_moved.join(SPLITTER)
-      log_message "Ho spostato i seguenti file: #{moved}#{SPLITTER}#{SPLITTER}Non ho trovato i seguenti files: #{not_moved}"
+      moved = copier.moved.join_in_groups_of(5)
+      not_moved = copier.not_moved.join_in_groups_of(5)
+      log_message "Ho spostato i seguenti file: #{moved}\n\nNon ho trovato i seguenti files: #{not_moved}"
     end
   end
 end

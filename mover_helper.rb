@@ -10,6 +10,16 @@ class NilClass
   end
 end
 
+class Array
+  def join_in_groups_of(n)
+    container = []
+    each_slice(n) do |array|
+      container << array.join(' ')
+    end
+    container.join("\n")
+  end    
+end
+  
 module FileAdapter
   SPLITTER =  "\n"
   

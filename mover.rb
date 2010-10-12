@@ -26,9 +26,12 @@ class Mover
   def recursive_mv(dir)
     Dir["#{dir}/*"].each do |entry|
       if File.file?(entry)
-        file = MovableFile.new(entry, @target_dir, @second_target_dir)
-        file.mv
-        moved << file.basename
+        basename = File.basename(entry)
+        if files.include?(basename)
+          file = MovableFile.new(entry, @target_dir, @second_target_dir)
+          file.mv
+          moved << basename
+        end
       elsif File.directory?(entry)
         recursive_mv(entry)
       end

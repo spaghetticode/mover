@@ -19,3 +19,9 @@ describe FileAdapter do
     FileAdapter.convert(files).should == %w[B-09-M-32.jpg A-08-C-42.jpg A-02-WW-73.jpg]
   end
 end
+
+describe Array do
+  it 'should group items' do
+    [1,2,3,4,5].join_in_groups_of(2).should == "1 2\n3 4\n5"
+  end
+end
