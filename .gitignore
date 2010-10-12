@@ -1,0 +1,5 @@
+.DS_Store
+spec/target
+spec/second_target
+!spec/target/.gitignore
+!spec/second_target/.gitignore
