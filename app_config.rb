@@ -16,7 +16,7 @@ module AppConfig
     end
     
     def save(source_dir, target_dir, second_target_dir)
-      config = {'source_dir' => source_dir, 'target_dir' => target_dir, 'second_target_dir' => second_target_dir}
+      config = {'source_dir' => source_dir, 'target_dir' => target_dir, 'second_target_dir' => second_target_dir, :path => path}
       File.open(path, 'w') do |file|
         YAML.dump config, file
       end

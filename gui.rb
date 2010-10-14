@@ -24,7 +24,7 @@ end
 class CopierFrame < Frame
   def initialize
     super(nil, -1, 'Sposta files', :size => Size.new(450, 450))
-    AppConfig.path = File.join(get_home_dir, 'file_mover.yml')
+    AppConfig.path = File.join(get_home_dir, '.file_mover.yml')
     @panel = Panel.new self
     
     @caption = StaticText.new @panel, :label => 'Copia qui i nomi dei files da spostare:'
@@ -86,7 +86,7 @@ class CopierFrame < Frame
   
   def on_submit_button(event)
     if @source.value.empty? || @first_dest.value.empty? || @files.value.empty?
-      log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da copiare"
+      log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
     else
       files = FileAdapter.convert(@files.value)
       copier = Mover.new(files, @source.value, @first_dest.value, @second_dest.value)
