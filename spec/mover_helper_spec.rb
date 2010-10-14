@@ -16,12 +16,14 @@ describe FileAdapter do
     files = "B-09-M-32
     A-08-C-42
     A-02-WW-73"
-    FileAdapter.convert(files).should == %w[B-09-M-32.jpg A-08-C-42.jpg A-02-WW-73.jpg]
+    FileAdapter.convert(files).should == %w[B-09-M-32 A-08-C-42 A-02-WW-73]
   end
-end
-
-describe Array do
-  it 'should group items' do
-    [1,2,3,4,5].join_in_groups_of(2).should == "1 2\n3 4\n5"
+  
+  it 'should remove duplicate entries' do
+    files = 'ABC
+    BCA
+    ABC
+    ABC'
+    FileAdapter.convert(files).should have(2).items
   end
 end

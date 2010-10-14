@@ -1,16 +1,17 @@
 require 'rubygems'
 require File.dirname(__FILE__) + '/movable_file'
 require File.dirname(__FILE__) + '/mover_helper'
+require File.dirname(__FILE__) + '/app_config'
 
 class Mover
-  attr_reader :files, :source_dir, :target_dir, :second_target_dir, :moved
+  attr_reader :files, :source_dir, :target_dir, :second_target_dir
   
   def initialize(files, source_dir, target_dir, second_target_dir=nil)
     @files = files
     @source_dir = source_dir
     @target_dir = target_dir
     @second_target_dir = second_target_dir unless second_target_dir.blank?
-    @moved = []
+    @moved_hash = {}
   end
   
   def mv
@@ -18,7 +19,11 @@ class Mover
   end
   
   def not_moved
-    files - moved
+    files - @moved_hash.keys
+  end
+  
+  def moved
+    @moved_hash.values
   end
   
   private
@@ -27,14 +32,14 @@ class Mover
     dir.gsub!('\\', '/') # win fix
     Dir["#{dir}/*"].each do |entry|
       if File.file?(entry)
-        basename = File.basename(entry)
-        if files.include?(basename)
+        basename_without_ext = File.basename(entry).chomp(File.extname(entry))
+        if files.include?(basename_without_ext)
           file = MovableFile.new(entry, @target_dir, @second_target_dir)
           file.mv
-          moved << basename
+          @moved_hash[basename_without_ext] = File.basename(entry)
         end
-      elsif File.directory?(entry)
-        recursive_mv(entry)
+      else
+        recursive_mv(entry) if File.directory?(entry)
       end
     end
   end

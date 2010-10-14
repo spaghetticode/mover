@@ -63,28 +63,28 @@ describe MovableFile do
   describe 'RM' do    
     it 'should delete source_file file' do
       @file.rm
-      File.file?(@file.source_file).should be_false
+      @file.source_file.should_not be_a_file
     end
   end
   
   describe 'COPY' do
     it 'should create copy files' do
       @file.copy
-      File.file?(@file.target_file).should be_true
-      File.file?(@file.second_target_file).should be_true
+      @file.target_file.should be_a_file
+      @file.second_target_file.should be_a_file
     end
   end
   
   describe 'MV' do
     it 'should copy file' do
       @file.mv
-      File.file?(@file.target_file).should be_true
-      File.file?(@file.second_target_file).should be_true
+      @file.target_file.should be_a_file
+      @file.second_target_file.should be_a_file
     end
     
     it 'should remove original file' do
       @file.mv
-      File.file?(@file.source_file).should be_false      
+      @file.source_file.should_not be_a_file
     end
   end
 end
