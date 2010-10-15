@@ -45,9 +45,6 @@ class CopierFrame < Frame
     @second_button = Button.new(@panel, -1, 'seconda directory destinazione')
     evt_button(@second_button.id) {|e| on_second_choose_button(e)}
     
-    @submit_button = Button.new(@panel, -1, 'sposta')
-    evt_button(@submit_button.id) {|e| on_submit_button(e)}
-    
     @sizer = BoxSizer.new(VERTICAL)
     @panel.sizer = @sizer
     
@@ -63,7 +60,15 @@ class CopierFrame < Frame
     @sizer.add @second_dest, 0, GROW|TOP|LEFT|RIGHT, 10
     @sizer.add @second_button, 0, GROW|TOP|LEFT|RIGHT|BOTTOM, 10
     
-    @sizer.add @submit_button, 0, ALIGN_CENTER|ALL, 10
+    @button_sizer = BoxSizer.new(HORIZONTAL)
+    @save_config_button = Button.new(@panel, -1, 'salva config')
+    evt_button(@save_config_button.id) {|e| on_save_config_button(e)}
+    @submit_button = Button.new(@panel, -1, 'sposta')
+    evt_button(@submit_button.id) {|e| on_submit_button(e)}
+    @button_sizer.add @save_config_button, 0, ALIGN_LEFT|RIGHT, 150
+    @button_sizer.add @submit_button, 0
+    
+    @sizer.add @button_sizer, 0, ALIGN_CENTER|ALL, 20
   end
   
   def on_source_button(event)
@@ -84,6 +89,10 @@ class CopierFrame < Frame
     @second_dest.value = dialog.path if dialog.show_modal == ID_OK
   end
   
+  def on_save_config_button(event)
+    AppConfig.save(@source.value, @first_dest.value, @second_dest.value)
+  end
+  
   def on_submit_button(event)
     if @source.value.empty? || @first_dest.value.empty? || @files.value.empty?
       log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
@@ -91,7 +100,6 @@ class CopierFrame < Frame
       files = FileAdapter.convert(@files.value)
       copier = Mover.new(files, @source.value, @first_dest.value, @second_dest.value)
       copier.mv
-      AppConfig.save(@source.value, @first_dest.value, @second_dest.value)
       moved = copier.moved.join("\n")
       not_moved = copier.not_moved.join("\n")
       ReportFrame.new(self, moved, not_moved).show
