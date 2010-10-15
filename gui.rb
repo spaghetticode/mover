@@ -27,6 +27,9 @@ class CopierFrame < Frame
     AppConfig.path = File.join(get_home_dir, '.file_mover.yml')
     @panel = Panel.new self
     
+    @save_config_button = Button.new(@panel, -1, 'salva config')
+    evt_button(@save_config_button.id) {|e| on_save_config_button(e)}
+    
     @caption = StaticText.new @panel, :label => 'Copia qui i nomi dei files da spostare:'
     @files = TextCtrl.new @panel, -1, '', DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
     
@@ -45,10 +48,14 @@ class CopierFrame < Frame
     @second_button = Button.new(@panel, -1, 'seconda directory destinazione')
     evt_button(@second_button.id) {|e| on_second_choose_button(e)}
     
+    @submit_button = Button.new(@panel, -1, 'sposta')
+    evt_button(@submit_button.id) {|e| on_submit_button(e)}
+    
     @sizer = BoxSizer.new(VERTICAL)
     @panel.sizer = @sizer
     
-    @sizer.add @caption, 0, GROW|TOP|LEFT|RIGHT, 10
+    @sizer.add @save_config_button, 0, ALIGN_RIGHT|TOP|RIGHT, 10
+    @sizer.add @caption, 0, GROW|LEFT, 10
     @sizer.add @files, 1, GROW|ALL, 10
     
     @sizer.add @source, 0, GROW|TOP|LEFT|RIGHT, 10
@@ -60,15 +67,7 @@ class CopierFrame < Frame
     @sizer.add @second_dest, 0, GROW|TOP|LEFT|RIGHT, 10
     @sizer.add @second_button, 0, GROW|TOP|LEFT|RIGHT|BOTTOM, 10
     
-    @button_sizer = BoxSizer.new(HORIZONTAL)
-    @save_config_button = Button.new(@panel, -1, 'salva config')
-    evt_button(@save_config_button.id) {|e| on_save_config_button(e)}
-    @submit_button = Button.new(@panel, -1, 'sposta')
-    evt_button(@submit_button.id) {|e| on_submit_button(e)}
-    @button_sizer.add @save_config_button, 0, ALIGN_LEFT|RIGHT, 150
-    @button_sizer.add @submit_button, 0
-    
-    @sizer.add @button_sizer, 0, ALIGN_CENTER|ALL, 20
+    @sizer.add @submit_button, 0, ALIGN_CENTER|ALL, 20
   end
   
   def on_source_button(event)
