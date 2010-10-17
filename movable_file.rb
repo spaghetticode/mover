@@ -13,10 +13,14 @@ class MovableFile
   
   def copied?
     if second_target_file
-      File.file?(target_file) && File.file?(second_target_file)
+      File.file?(target_file) && same_size? && File.file?(second_target_file)
     else
-      File.file?(target_file)
+      File.file?(target_file) && same_size?
     end
+  end
+  
+  def same_size?
+    File.size(target_file) == File.size(source_file)
   end
   
   def copy

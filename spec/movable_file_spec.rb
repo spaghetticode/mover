@@ -42,6 +42,7 @@ describe MovableFile do
     before do
       File.should_receive(:file?).with(@file.target_file).and_return(true)
       File.should_receive(:file?).with(@file.second_target_file).and_return(true)
+      @file.should_receive(:same_size?).and_return(true)
     end
     
     it 'it should be copied' do
@@ -53,6 +54,7 @@ describe MovableFile do
     before do
       @file.should_receive(:second_target_file).and_return(nil)
       File.should_receive(:file?).with(@file.target_file).and_return(true)
+      @file.should_receive(:same_size?).and_return(true)
     end
     
     it 'should be copied' do
