@@ -88,5 +88,15 @@ describe MovableFile do
       @file.mv
       @file.source_file.should_not be_a_file
     end
+    
+    
+    it 'should return true' do
+      @file.mv.should be_true
+    end
+    
+    it 'should return false if files were not copied' do
+      @file.stub!(:copied? => false)
+      @file.mv.should be_false
+    end
   end
 end

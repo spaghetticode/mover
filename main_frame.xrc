@@ -3,7 +3,7 @@
     <object class="wxFrame" name="ID_WXFRAME" subclass="TextFrameBase">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMINIMIZE_BOX|wxMAXIMIZE_BOX|wxCLOSE_BOX</style>
         <size>400,400</size>
-        <title>Copia Files</title>
+        <title>Sposta Files</title>
         <centered>1</centered>
         <object class="wxPanel" name="ID_PANEL">
             <style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
