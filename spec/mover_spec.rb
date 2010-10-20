@@ -3,6 +3,10 @@ describe Mover do
     File.dirname(__FILE__)
   end
   
+  def prog_bar
+    @prog_bar ||= mock
+  end
+  
   def prepare_fs
     @file_path = File.join(@source_dir, @file)
     @not_moved_file_path = File.join(@source_dir, @not_moved_file)
@@ -34,7 +38,7 @@ describe Mover do
   end
   
   context 'a mover with both target directories set' do
-    before { @mover = Mover.new([@file_without_ext], @source_dir, @target_dir, @second_target_dir) }
+    before { @mover = Mover.new(prog_bar, [@file_without_ext], @source_dir, @target_dir, @second_target_dir) }
     
     it 'should set attributes as expected' do
       @mover.files.should == [@file.chomp(File.extname(@file))]
@@ -44,7 +48,7 @@ describe Mover do
     end
     
     it 'should set second_target_dir to nil' do
-      @mover = Mover.new([@file], @source_dir, @target_dir, '')
+      @mover = Mover.new(prog_bar, [@file], @source_dir, @target_dir, '')
       @mover.second_target_dir.should be_nil
     end
     
@@ -105,7 +109,7 @@ describe Mover do
   end
   
   context 'a mover with only one target directory set' do
-    before { @mover = Mover.new([@file_without_ext], @source_dir, @target_dir) }
+    before { @mover = Mover.new(prog_bar, [@file_without_ext], @source_dir, @target_dir) }
     
     it 'should create expected file' do
       @mover.mv

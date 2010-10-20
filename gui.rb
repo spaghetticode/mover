@@ -2,6 +2,7 @@ require 'rubygems'
 require 'wx'
 require 'movable_file'
 require 'mover'
+require 'main_frame'
 include Wx
 
 class ReportFrame < Frame
@@ -21,94 +22,67 @@ class ReportFrame < Frame
   end
 end
 
-class CopierFrame < Frame
+class MoverFrame < TextFrameBase
   def initialize
-    super(nil, -1, 'Sposta files', :size => Size.new(450, 450))
     AppConfig.path = File.join(get_home_dir, '.file_mover.yml')
-    @panel = Panel.new self
-    
-    @save_config_button = Button.new(@panel, -1, 'salva config')
-    evt_button(@save_config_button.id) {|e| on_save_config_button(e)}
-    
-    @caption = StaticText.new @panel, :label => 'Copia qui i nomi dei files da spostare:'
-    @files = TextCtrl.new @panel, -1, '', DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
-    
-    @source = TextCtrl.new @panel, -1, "", DEFAULT_POSITION, Size.new(350, 22)
-    @source.value = AppConfig.source_dir if AppConfig.source_dir
-    @source_button = Button.new(@panel, -1, 'directory origine')
-    evt_button(@source_button.id) {|e| on_source_button(e)}
-    
-    @first_dest = TextCtrl.new @panel, -1, "", DEFAULT_POSITION, Size.new(350, 22)
-    @first_dest.value = AppConfig.target_dir if AppConfig.target_dir
-    @first_button = Button.new(@panel, -1, 'prima directory destinazione')
-    evt_button(@first_button.id) {|e| on_first_choose_button(e)}
-    
-    @second_dest = TextCtrl.new @panel, -1, "", DEFAULT_POSITION, Size.new(350, 22)
-    @second_dest.value = AppConfig.second_target_dir if AppConfig.second_target_dir
-    @second_button = Button.new(@panel, -1, 'seconda directory destinazione')
-    evt_button(@second_button.id) {|e| on_second_choose_button(e)}
-    
-    @submit_button = Button.new(@panel, -1, 'sposta')
-    evt_button(@submit_button.id) {|e| on_submit_button(e)}
-    
-    @sizer = BoxSizer.new(VERTICAL)
-    @panel.sizer = @sizer
-    
-    @sizer.add @save_config_button, 0, ALIGN_RIGHT|TOP|RIGHT, 10
-    @sizer.add @caption, 0, GROW|LEFT, 10
-    @sizer.add @files, 1, GROW|ALL, 10
-    
-    @sizer.add @source, 0, GROW|TOP|LEFT|RIGHT, 10
-    @sizer.add @source_button, 0, GROW|TOP|LEFT|RIGHT|BOTTOM, 10
-        
-    @sizer.add @first_dest, 0, GROW|TOP|LEFT|RIGHT, 10
-    @sizer.add @first_button, 0, GROW|TOP|LEFT|RIGHT|BOTTOM, 10
-    
-    @sizer.add @second_dest, 0, GROW|TOP|LEFT|RIGHT, 10
-    @sizer.add @second_button, 0, GROW|TOP|LEFT|RIGHT|BOTTOM, 10
-    
-    @sizer.add @submit_button, 0, ALIGN_CENTER|ALL, 20
+    super
+    source_dir_txt.value = AppConfig.source_dir if AppConfig.source_dir
+    target_dir_txt.value = AppConfig.target_dir if AppConfig.target_dir
+    second_target_dir_txt.value = AppConfig.second_target_dir if AppConfig.second_target_dir    
+    evt_button(save_config_bt) {|e| on_save_config_button(e)}
+    evt_button(source_dir_bt) {|e| on_source_button(e)}
+    evt_button(target_dir_bt) {|e| on_first_choose_button(e)}
+    evt_button(second_target_dir_bt) {|e| on_second_choose_button(e)}
+    evt_button(submit_bt) {|e| on_submit_button(e)}
   end
   
   def on_source_button(event)
     dir_home = AppConfig.source_dir || get_home_dir
     dialog = DirDialog.new(self, "Scegli la directory di origine", dir_home)
-    @source.value = dialog.path if dialog.show_modal == ID_OK
+    source_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
   
   def on_first_choose_button(event)
     dir_home = AppConfig.target_dir || get_home_dir
     dialog = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
-    @first_dest.value = dialog.path if dialog.show_modal == ID_OK
+    target_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
   
   def on_second_choose_button(event)
     dir_home = AppConfig.second_target_dir || get_home_dir
     dialog = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
-    @second_dest.value = dialog.path if dialog.show_modal == ID_OK
+    second_target_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
-  
+
   def on_save_config_button(event)
-    AppConfig.save(@source.value, @first_dest.value, @second_dest.value)
+    AppConfig.save(source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
   end
   
   def on_submit_button(event)
-    if @source.value.empty? || @first_dest.value.empty? || @files.value.empty?
+    if required_fields_empty?
       log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
     else
-      files = FileAdapter.convert(@files.value)
-      copier = Mover.new(files, @source.value, @first_dest.value, @second_dest.value)
-      copier.mv
-      moved = copier.moved.join("\n")
-      not_moved = copier.not_moved.join("\n")
+      prog_bar = ProgressDialog.new('', 'Inizio spostamento files, per favore attendere...', 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
+      files = FileAdapter.convert(file_names_txt.value)
+      mover = Mover.new(prog_bar, files, source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
+      mover.mv
+      prog_bar.update(100, "#{mover.moved_count} files spostati. Operazione terminata.")
+      moved = mover.moved.join("\n")
+      not_moved = mover.not_moved.join("\n")
       ReportFrame.new(self, moved, not_moved).show
     end
+  end
+  
+  private
+  
+  def required_fields_empty?
+    source_dir_txt.value.empty? || target_dir_txt.value.empty? || file_names_txt.value.empty?
   end
 end
 
 class MoverApp < App
   def on_init
-    CopierFrame.new.show
+    MoverFrame.new.show
   end
 end
 

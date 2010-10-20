@@ -4,14 +4,17 @@ require File.dirname(__FILE__) + '/mover_helper'
 require File.dirname(__FILE__) + '/app_config'
 
 class Mover
-  attr_reader :files, :source_dir, :target_dir, :second_target_dir
+  attr_reader :files, :source_dir, :target_dir, :second_target_dir, :moved_count
   
-  def initialize(files, source_dir, target_dir, second_target_dir=nil)
+  def initialize(prog_bar, files, source_dir, target_dir, second_target_dir=nil)
+    @prog_bar = prog_bar
     @files = files
     @source_dir = source_dir
     @target_dir = target_dir
     @second_target_dir = second_target_dir unless second_target_dir.blank?
     @moved_hash = {}
+    @moved_count = 0
+    @files_count = files.size
   end
   
   def mv
@@ -28,6 +31,14 @@ class Mover
   
   private
   
+  def remaining_count
+    @files_count - @moved_count
+  end
+  
+  def progress_count
+    ((100.0 / @files_count) * @moved_count).to_i
+  end
+  
   def recursive_mv(dir)
     dir.gsub!('\\', '/') # win fix
     Dir["#{dir}/*"].each do |entry|
@@ -37,6 +48,10 @@ class Mover
           file = MovableFile.new(entry, @target_dir, @second_target_dir)
           file.mv
           @moved_hash[basename_without_ext] = File.basename(entry)
+          @moved_count += 1
+          if @moved_count % 5 == 0
+            @prog_bar.update(progress_count, "#{@moved_count} files spostati, #{remaining_count} files ancora da spostare")
+          end
         end
       else
         recursive_mv(entry) if File.directory?(entry)
