@@ -34,6 +34,10 @@ class MovableFile
   
   def mv
     copy
-    rm if copied?
+    if copied?
+      rm
+      return true
+    end
+    false
   end
 end

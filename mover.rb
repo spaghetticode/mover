@@ -46,11 +46,12 @@ class Mover
         basename_without_ext = File.basename(entry).chomp(File.extname(entry))
         if files.include?(basename_without_ext)
           file = MovableFile.new(entry, @target_dir, @second_target_dir)
-          file.mv
-          @moved_hash[basename_without_ext] = File.basename(entry)
-          @moved_count += 1
-          if @moved_count % 5 == 0
-            @prog_bar.update(progress_count, "#{@moved_count} files spostati, #{remaining_count} files ancora da spostare")
+          if file.mv && @moved_hash[basename_without_ext].nil?
+            @moved_hash[basename_without_ext] = File.basename(entry)
+            @moved_count += 1
+            if @moved_count % 5 == 0
+              @prog_bar.update(progress_count, "#{@moved_count} files spostati, #{remaining_count} files ancora da spostare")
+            end
           end
         end
       else
