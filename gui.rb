@@ -61,6 +61,8 @@ class MoverFrame < TextFrameBase
   def on_submit_button(event)
     if required_fields_empty?
       log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
+    elsif target_dir_txt.value.include?(source_dir_txt.value)
+      log_message "La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine"
     else
       prog_bar = ProgressDialog.new('', 'Inizio spostamento files, per favore attendere...', 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
       files = FileAdapter.convert(file_names_txt.value)
