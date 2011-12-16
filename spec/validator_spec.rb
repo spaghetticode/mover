@@ -1,0 +1,2 @@
+describe Validator do
+end

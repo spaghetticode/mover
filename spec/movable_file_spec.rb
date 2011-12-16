@@ -62,14 +62,14 @@ describe MovableFile do
     end
   end
   
-  describe 'RM' do    
+  describe '#rm' do    
     it 'should delete source_file file' do
       @file.rm
       @file.source_file.should_not be_a_file
     end
   end
   
-  describe 'COPY' do
+  describe '#copy' do
     it 'should create copy files' do
       @file.copy
       @file.target_file.should be_a_file
@@ -77,7 +77,7 @@ describe MovableFile do
     end
   end
   
-  describe 'MV' do
+  describe '#mv' do
     it 'should copy file' do
       @file.mv
       @file.target_file.should be_a_file

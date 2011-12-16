@@ -7,3 +7,7 @@ To compile the program on windows:
   ocra gui.rb main_frame.xrc --windows --icon image.ico
   
 Remember when using ocra to include extra files needed by the program
+
+To run specs:
+  cd specs
+  rspec spec_helper.rb

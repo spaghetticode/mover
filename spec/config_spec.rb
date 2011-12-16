@@ -1,5 +1,3 @@
-require 'ruby-debug'
-
 describe AppConfig do
   context 'when there is no config file to load' do
     context 'when there is no default dir set' do

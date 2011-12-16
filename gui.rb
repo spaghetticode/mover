@@ -2,6 +2,9 @@ require 'rubygems'
 require 'wx'
 require 'movable_file'
 require 'mover'
+require 'code'
+require 'cleaner'
+require 'validator'
 require 'main_frame'
 include Wx
 
@@ -40,19 +43,19 @@ class MoverFrame < TextFrameBase
   
   def on_source_button(event)
     dir_home = AppConfig.source_dir || get_home_dir
-    dialog = DirDialog.new(self, "Scegli la directory di origine", dir_home)
+    dialog   = DirDialog.new(self, "Scegli la directory di origine", dir_home)
     source_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
   
   def on_first_choose_button(event)
     dir_home = AppConfig.target_dir || get_home_dir
-    dialog = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
+    dialog   = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
     target_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
   
   def on_second_choose_button(event)
     dir_home = AppConfig.second_target_dir || get_home_dir
-    dialog = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
+    dialog   = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
     second_target_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
 
@@ -65,21 +68,27 @@ class MoverFrame < TextFrameBase
   end
   
   def on_clean_button(event)
-    raise "clean"
+    if file_names_txt.value.empty?
+      log_message 'Devi inserire una lista di sigle'
+    else
+      codes   = FileAdapter.codes(file_names_txt.value)
+      cleaner = Cleaner.new(codes)
+      file_names_txt.value = cleaner.remove_control_codes
+    end
   end
   
   def on_submit_button(event)
     if required_fields_empty?
-      log_message "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
+      log_message error_message
     elsif target_dir_txt.value.include?(source_dir_txt.value)
-      log_message "La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine"
+      log_message invalid_folder
     else
-      prog_bar = ProgressDialog.new('', 'Inizio spostamento files, per favore attendere...', 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
-      files = FileAdapter.convert(file_names_txt.value)
-      mover = Mover.new(prog_bar, files, source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
+      prog_bar = ProgressDialog.new('', start_message, 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
+      files    = FileAdapter.convert(file_names_txt.value)
+      mover    = Mover.new(prog_bar, files, source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
       mover.mv
       prog_bar.update(100, "#{mover.moved_count} files spostati. Operazione terminata.")
-      moved = mover.moved.join("\n")
+      moved     = mover.moved.join("\n")
       not_moved = mover.not_moved.join("\n")
       ReportFrame.new(self, moved, not_moved).show
     end
@@ -89,6 +98,18 @@ class MoverFrame < TextFrameBase
   
   def required_fields_empty?
     source_dir_txt.value.empty? || target_dir_txt.value.empty? || file_names_txt.value.empty?
+  end
+  
+  def error_message
+    'Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare'
+  end
+  
+  def invalid_folder
+    'La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine'
+  end
+  
+  def start_message
+    'Inizio spostamento files, per favore attendere...'
   end
 end
 

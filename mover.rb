@@ -1,6 +1,6 @@
 require 'rubygems'
 require File.dirname(__FILE__) + '/movable_file'
-require File.dirname(__FILE__) + '/mover_helper'
+require File.dirname(__FILE__) + '/helpers'
 require File.dirname(__FILE__) + '/app_config'
 
 class Mover

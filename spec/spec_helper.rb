@@ -1,5 +1,8 @@
 require 'rspec'
 require File.dirname(__FILE__) + '/../mover'
+require File.dirname(__FILE__) + '/../code'
+require File.dirname(__FILE__) + '/../cleaner'
+require File.dirname(__FILE__) + '/../validator'
 
 Dir['*.rb'].each do |file|
   require file
