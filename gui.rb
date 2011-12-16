@@ -8,20 +8,31 @@ require 'validator'
 require 'main_frame'
 include Wx
 
-class ReportFrame < Frame
+class MovedFrame < Frame
   def initialize(parent, moved, not_moved)
-    super(parent, -1, 'Report', :size => Size.new(300,200))
+    super(parent, -1, 'Report', :size => Size.new(300, 200))
     panel = Panel.new(self)
-    sizer = BoxSizer.new(VERTICAL)
-    panel.sizer   = sizer
+    panel.sizer   = BoxSizer.new(VERTICAL)
     moved_caption = StaticText.new panel, :label => 'Ho spostato i seguenti files:'
     moved_box     = TextCtrl.new panel, -1, moved, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
     not_moved_box = TextCtrl.new panel, -1, not_moved, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
     not_moved_caption = StaticText.new panel, :label => 'Non ho trovato i seguenti files:'
-    sizer.add not_moved_caption, 0
-    sizer.add not_moved_box, 1, GROW|ALL, 10
-    sizer.add moved_caption, 0
-    sizer.add moved_box, 1, GROW|ALL, 10
+    panel.sizer.add not_moved_caption, 0
+    panel.sizer.add not_moved_box, 1, GROW|ALL, 10
+    panel.sizer.add moved_caption, 0
+    panel.sizer.add moved_box, 1, GROW|ALL, 10
+  end
+end
+
+class InvalidFrame < Frame
+  def initialize(parent, message)
+    super(parent, -1, 'Report', :size => Size.new(300, 200))
+    panel = Panel.new(self)
+    panel.sizer     = BoxSizer.new(VERTICAL)
+    invalid_caption = StaticText.new panel, :label => 'Le seguenti sigle sono invalide:'
+    invalid_box     = TextCtrl.new panel, -1, message, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
+    panel.sizer.add invalid_caption, 0
+    panel.sizer.add invalid_box, 1, GROW|ALL, 10
   end
 end
 
@@ -32,13 +43,7 @@ class MoverFrame < TextFrameBase
     source_dir_txt.value = AppConfig.source_dir if AppConfig.source_dir
     target_dir_txt.value = AppConfig.target_dir if AppConfig.target_dir
     second_target_dir_txt.value = AppConfig.second_target_dir if AppConfig.second_target_dir
-    evt_button(clean_bt)       {|e| on_clean_button(e)}
-    evt_button(save_config_bt) {|e| on_save_config_button(e)}
-    evt_button(validate_bt)    {|e| on_validate_button(e)}
-    evt_button(submit_bt)      {|e| on_submit_button(e)}
-    evt_button(source_dir_bt)  {|e| on_source_button(e)}
-    evt_button(target_dir_bt)  {|e| on_first_choose_button(e)}
-    evt_button(second_target_dir_bt) {|e| on_second_choose_button(e)}
+    bind_events
   end
   
   def on_source_button(event)
@@ -64,7 +69,15 @@ class MoverFrame < TextFrameBase
   end
   
   def on_validate_button(event)
-    raise "verify"
+    if file_names_txt.value.empty?
+      log_message 'Devi inserire una lista di sigle'
+    else
+      codes = FileAdapter.codes(file_names_txt.value)
+      validator = Validator.new(codes)
+      invalid_codes = validator.get_invalid_codes
+      message = invalid_codes.empty? && 'Le sigle sono valide o non hanno codice di controllo' || invalid_codes
+      InvalidFrame.new(self, message).show
+    end
   end
   
   def on_clean_button(event)
@@ -90,11 +103,21 @@ class MoverFrame < TextFrameBase
       prog_bar.update(100, "#{mover.moved_count} files spostati. Operazione terminata.")
       moved     = mover.moved.join("\n")
       not_moved = mover.not_moved.join("\n")
-      ReportFrame.new(self, moved, not_moved).show
+      MovedFrame.new(self, moved, not_moved).show
     end
   end
   
   private
+  
+  def bind_events
+    evt_button(clean_bt)       {|e| on_clean_button(e)}
+    evt_button(save_config_bt) {|e| on_save_config_button(e)}
+    evt_button(validate_bt)    {|e| on_validate_button(e)}
+    evt_button(submit_bt)      {|e| on_submit_button(e)}
+    evt_button(source_dir_bt)  {|e| on_source_button(e)}
+    evt_button(target_dir_bt)  {|e| on_first_choose_button(e)}
+    evt_button(second_target_dir_bt) {|e| on_second_choose_button(e)}
+  end
   
   def required_fields_empty?
     source_dir_txt.value.empty? || target_dir_txt.value.empty? || file_names_txt.value.empty?

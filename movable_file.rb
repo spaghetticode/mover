@@ -5,7 +5,7 @@ class MovableFile
   attr_reader :basename, :source_file, :target_file, :second_target_file
   
   def initialize(source_file, target, second_target=nil)
-    @basename = File.basename(source_file)
+    @basename    = File.basename(source_file)
     @source_file = source_file
     @target_file = File.join(target, basename)
     @second_target_file = File.join(second_target, basename) if second_target

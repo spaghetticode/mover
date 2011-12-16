@@ -7,12 +7,12 @@ class Mover
   attr_reader :files, :source_dir, :target_dir, :second_target_dir, :moved_count
   
   def initialize(prog_bar, files, source_dir, target_dir, second_target_dir=nil)
-    @prog_bar = prog_bar
-    @files = files
+    @files      = files
+    @prog_bar   = prog_bar
     @source_dir = source_dir
     @target_dir = target_dir
     @second_target_dir = second_target_dir unless second_target_dir.blank?
-    @moved_hash = {}
+    @moved_hash  = {}
     @moved_count = 0
     @files_count = files.size
   end

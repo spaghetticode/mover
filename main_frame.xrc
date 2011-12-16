@@ -103,6 +103,7 @@
                             <flag>wxALIGN_TOP|wxALL</flag>
                             <border>20</border>
                             <object class="wxButton" name="validate_bt">
+                                <fg>#008040</fg>
                                 <label>verifica</label>
                             </object>
                         </object>
@@ -110,13 +111,15 @@
                             <flag>wxGROW|wxALL</flag>
                             <border>20</border>
                             <object class="wxButton" name="clean_bt">
-                                <label>pulisci</label>
+                                <fg>#008040</fg>
+                                <label>rimuovi codice</label>
                             </object>
                         </object>
                         <object class="sizeritem">
                             <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                             <border>20</border>
                             <object class="wxButton" name="submit_bt">
+                                <fg>#800000</fg>
                                 <label>sposta</label>
                             </object>
                         </object>
