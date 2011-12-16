@@ -1,0 +1,9 @@
+This shit require wxruby gem, and ocra on the windows machine to compile the exe
+
+To start program in development:
+  env arch -i386 ruby gui.rb
+
+To compile the program on windows:
+  ocra gui.rb main_frame.xrc --windows --icon image.ico
+  
+Remember when using ocra to include extra files needed by the program

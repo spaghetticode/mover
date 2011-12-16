@@ -8,13 +8,13 @@ include Wx
 class ReportFrame < Frame
   def initialize(parent, moved, not_moved)
     super(parent, -1, 'Report', :size => Size.new(300,200))
-    panel = Panel.new self
+    panel = Panel.new(self)
     sizer = BoxSizer.new(VERTICAL)
-    panel.sizer = sizer
+    panel.sizer   = sizer
     moved_caption = StaticText.new panel, :label => 'Ho spostato i seguenti files:'
-    not_moved_caption = StaticText.new panel, :label => 'Non ho trovato i seguenti files:'
+    moved_box     = TextCtrl.new panel, -1, moved, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
     not_moved_box = TextCtrl.new panel, -1, not_moved, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
-    moved_box = TextCtrl.new panel, -1, moved, DEFAULT_POSITION, DEFAULT_SIZE, TE_MULTILINE
+    not_moved_caption = StaticText.new panel, :label => 'Non ho trovato i seguenti files:'
     sizer.add not_moved_caption, 0
     sizer.add not_moved_box, 1, GROW|ALL, 10
     sizer.add moved_caption, 0
@@ -28,12 +28,14 @@ class MoverFrame < TextFrameBase
     super
     source_dir_txt.value = AppConfig.source_dir if AppConfig.source_dir
     target_dir_txt.value = AppConfig.target_dir if AppConfig.target_dir
-    second_target_dir_txt.value = AppConfig.second_target_dir if AppConfig.second_target_dir    
+    second_target_dir_txt.value = AppConfig.second_target_dir if AppConfig.second_target_dir
+    evt_button(clean_bt)       {|e| on_clean_button(e)}
     evt_button(save_config_bt) {|e| on_save_config_button(e)}
-    evt_button(source_dir_bt) {|e| on_source_button(e)}
-    evt_button(target_dir_bt) {|e| on_first_choose_button(e)}
+    evt_button(validate_bt)    {|e| on_validate_button(e)}
+    evt_button(submit_bt)      {|e| on_submit_button(e)}
+    evt_button(source_dir_bt)  {|e| on_source_button(e)}
+    evt_button(target_dir_bt)  {|e| on_first_choose_button(e)}
     evt_button(second_target_dir_bt) {|e| on_second_choose_button(e)}
-    evt_button(submit_bt) {|e| on_submit_button(e)}
   end
   
   def on_source_button(event)
@@ -56,6 +58,14 @@ class MoverFrame < TextFrameBase
 
   def on_save_config_button(event)
     AppConfig.save(source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
+  end
+  
+  def on_validate_button(event)
+    raise "verify"
+  end
+  
+  def on_clean_button(event)
+    raise "clean"
   end
   
   def on_submit_button(event)

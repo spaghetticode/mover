@@ -10,7 +10,7 @@ class TextFrameBase < Wx::Frame
 	attr_reader :save_config_bt, :file_names_txt, :source_dir_txt,
               :source_dir_bt, :target_dir_txt, :target_dir_bt,
               :second_target_dir_txt, :second_target_dir_bt,
-              :submit_bt
+              :submit_bt, :validate_bt, :clean_bt
 	
 	def initialize(parent = nil)
 		super()
@@ -19,7 +19,6 @@ class TextFrameBase < Wx::Frame
 		xml.init_all_handlers
 		xml.load(File.join(File.dirname(__FILE__),"main_frame.xrc"))
 		xml.load_frame_subclass(self, parent, "ID_WXFRAME")
-
 		finder = lambda do | x | 
 			int_id = Wx::xrcid(x)
 			begin
@@ -31,15 +30,17 @@ class TextFrameBase < Wx::Frame
 			end
 		end
 		
+		@clean_bt  = finder.call("clean_bt")
+		@validate_bt = finder.call("validate_bt")
+		@submit_bt = finder.call("submit_bt")
 		@save_config_bt = finder.call("save_config_bt")
 		@file_names_txt = finder.call("file_names_txt")
 		@source_dir_txt = finder.call("source_dir_txt")
-		@source_dir_bt = finder.call("source_dir_bt")
+		@source_dir_bt  = finder.call("source_dir_bt")
+		@target_dir_bt  = finder.call("target_dir_bt")
 		@target_dir_txt = finder.call("target_dir_txt")
-		@target_dir_bt = finder.call("target_dir_bt")
 		@second_target_dir_txt = finder.call("second_target_dir_txt")
-		@second_target_dir_bt = finder.call("second_target_dir_bt")
-		@submit_bt = finder.call("submit_bt")
+		@second_target_dir_bt  = finder.call("second_target_dir_bt")
 		if self.class.method_defined? "on_init"
 			self.on_init()
 		end
