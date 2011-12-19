@@ -74,4 +74,34 @@ describe Code do
       end
     end
   end
+  
+  describe 'an instance invalid for formats' do
+    it 'year should not be valid' do
+      ['a1-12-c-11', '2-12-c-11', 'aa-12-c-11'].each do |code|
+        Code.new(code).year_valid?.should be_false
+      end
+    end
+    
+    it 'month should not be valid' do
+      ['A-13-c-12', 'A-a1-c-12', 'A-1c-c-12', 'a-0-c-12'].each do |code|
+        Code.new(code).month_valid?.should be_false
+      end
+    end
+    
+    it 'designer should not be valid' do
+      ['a-12-c1-11', 'a-12-2-11', 'a-12-cc-11'].each do |code|
+        Code.new(code).designer_valid?.should be_false
+      end
+    end
+    
+    it 'count should not be valid' do
+      ['a-12-c-0', 'a-12-c-c1', 'a-12-c-1c'].each do |code|
+        Code.new(code).count_valid?.should be_false
+      end
+    end
+    
+    it 'should not be valid if parts are not valid' do
+      Code.new('DA-01-A-15').should_not be_valid
+    end
+  end
 end

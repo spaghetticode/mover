@@ -15,25 +15,59 @@ class Code
   end
   
   def valid?
-    return true unless control_code
-    return false unless @parts.size > 3
-    year_number + month + designer_number + count == control_code
+    unless @parts.size > 3 and parts_valid?
+      false
+    else
+      unless control_code
+        true
+      else
+        year_number + month + designer_number + count == control_code
+      end
+    end
+  end
+  
+  def year
+    @parts[0].upcase
+  end
+  
+  def designer
+    @parts[2].upcase
+  end
+  
+  def parts_valid?
+    year_valid? and month_valid? and designer_valid? and count_valid?
+  end
+  
+  def count_valid?
+    count > 0
+  end
+  
+  def month_valid?
+    month > 0 and month <= 12
+  end
+  
+  def designer_valid?
+    LETTERS.include?(designer) 
+  end
+  
+  def year_valid?
+    LETTERS.include?(year)
   end
   
   def year_number
-    LETTERS.index(@parts[0].upcase) + 1
-  end
-  
-  def month
-    @parts[1].to_i
+    LETTERS.index(year) + 1
   end
   
   def designer_number
-    LETTERS.index(@parts[2].upcase) + 1
+    LETTERS.index(designer) + 1
+  end
+  
+  def month
+    @parts[1] =~ /^\d+$/ && @parts[1].to_i || 0
   end
   
   def count
-    @parts[3].to_i
+    @parts[3] =~ /^\d+$/ && @parts[3].to_i || 0
   end
   
   def control_code
