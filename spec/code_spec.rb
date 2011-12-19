@@ -32,6 +32,10 @@ describe Code do
       context 'when code is invalid' do
         it { invalid.should_not be_valid }
       end
+      
+      it 'when code format is invalid but there is no control code' do
+        Code.new('DA-01-A-15').should_not be_valid
+      end
     end
 
     describe '#year_number' do
@@ -75,33 +79,37 @@ describe Code do
     end
   end
   
-  describe 'an instance invalid for formats' do
-    it 'year should not be valid' do
-      ['a1-12-c-11', '2-12-c-11', 'aa-12-c-11'].each do |code|
-        Code.new(code).year_valid?.should be_false
+  describe 'parts validations' do
+    context 'when year format is not valid' do
+      it 'year should be invalid' do
+        ['a1-12-c-11', '2-12-c-11', 'aa-12-c-11'].each do |code|
+          Code.new(code).should_not be_year_valid
+        end
       end
     end
     
-    it 'month should not be valid' do
-      ['A-13-c-12', 'A-a1-c-12', 'A-1c-c-12', 'a-0-c-12'].each do |code|
-        Code.new(code).month_valid?.should be_false
+    context 'when month format is not valid' do
+      it 'month should be invalid' do
+        ['A-13-c-12', 'A-a1-c-12', 'A-1c-c-12', 'a-0-c-12'].each do |code|
+          Code.new(code).should_not be_month_valid
+        end
       end
     end
     
-    it 'designer should not be valid' do
-      ['a-12-c1-11', 'a-12-2-11', 'a-12-cc-11'].each do |code|
-        Code.new(code).designer_valid?.should be_false
+    context 'when designer is not valid' do
+      it 'designer should be invalid' do
+        ['a-12-c1-11', 'a-12-2-11', 'a-12-cc-11'].each do |code|
+          Code.new(code).should_not be_designer_valid
+        end
       end
     end
     
-    it 'count should not be valid' do
-      ['a-12-c-0', 'a-12-c-c1', 'a-12-c-1c'].each do |code|
-        Code.new(code).count_valid?.should be_false
+    context 'when count is not valid' do
+      it 'count should be invalid' do
+        ['a-12-c-0', 'a-12-c-c1', 'a-12-c-1c'].each do |code|
+          Code.new(code).should_not be_count_valid
+        end
       end
-    end
-    
-    it 'should not be valid if parts are not valid' do
-      Code.new('DA-01-A-15').should_not be_valid
     end
   end
 end

@@ -34,6 +34,18 @@ class Code
     @parts[2].upcase
   end
   
+  def month
+    @parts[1] =~ /^\d+$/ && @parts[1].to_i || 0
+  end
+  
+  def count
+    @parts[3] =~ /^\d+$/ && @parts[3].to_i || 0
+  end
+  
+  def control_code
+    @parts[4] && @parts[4].to_i
+  end
+  
   def parts_valid?
     year_valid? and month_valid? and designer_valid? and count_valid?
   end
@@ -46,31 +58,13 @@ class Code
     month > 0 and month <= 12
   end
   
-  def designer_valid?
-    LETTERS.include?(designer) 
-  end
-  
-  def year_valid?
-    LETTERS.include?(year)
-  end
-  
-  def year_number
-    LETTERS.index(year) + 1
-  end
-  
-  def designer_number
-    LETTERS.index(designer) + 1
-  end
-  
-  def month
-    @parts[1] =~ /^\d+$/ && @parts[1].to_i || 0
-  end
-  
-  def count
-    @parts[3] =~ /^\d+$/ && @parts[3].to_i || 0
-  end
-  
-  def control_code
-    @parts[4] && @parts[4].to_i
+  %w[designer year].each do |field|
+    define_method "#{field}_valid?" do
+      LETTERS.include?(send(field))
+    end
+    
+    define_method "#{field}_number" do
+      LETTERS.index(send(field)) + 1
+    end
   end
 end
