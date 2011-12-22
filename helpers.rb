@@ -9,17 +9,21 @@ class NilClass
     true
   end
 end
-  
+
 module FileAdapter
   SPLITTER =  "\n"
-  
+
   class << self
     def convert(files)
       files.split(SPLITTER).map {|filename| filename.strip}.compact.uniq
     end
-  
+
     def codes(values)
       values.split(' ').map {|code| code.strip}.compact.uniq
+    end
+
+    def same_dir?(target, origin)
+      target =~ /^#{origin}(\/|$)/
     end
   end
 end

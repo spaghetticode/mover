@@ -45,19 +45,19 @@ class MoverFrame < TextFrameBase
     second_target_dir_txt.value = AppConfig.second_target_dir if AppConfig.second_target_dir
     bind_events
   end
-  
+
   def on_source_button(event)
     dir_home = AppConfig.source_dir || get_home_dir
     dialog   = DirDialog.new(self, "Scegli la directory di origine", dir_home)
     source_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
-  
+
   def on_first_choose_button(event)
     dir_home = AppConfig.target_dir || get_home_dir
     dialog   = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
     target_dir_txt.value = dialog.path if dialog.show_modal == ID_OK
   end
-  
+
   def on_second_choose_button(event)
     dir_home = AppConfig.second_target_dir || get_home_dir
     dialog   = DirDialog.new(self, "Scegli la directory di destinazione", dir_home)
@@ -67,7 +67,7 @@ class MoverFrame < TextFrameBase
   def on_save_config_button(event)
     AppConfig.save(source_dir_txt.value, target_dir_txt.value, second_target_dir_txt.value)
   end
-  
+
   def on_validate_button(event)
     if file_names_txt.value.empty?
       log_message 'Devi inserire una lista di sigle'
@@ -79,7 +79,7 @@ class MoverFrame < TextFrameBase
       InvalidFrame.new(self, message).show
     end
   end
-  
+
   def on_clean_button(event)
     if file_names_txt.value.empty?
       log_message 'Devi inserire una lista di sigle'
@@ -89,11 +89,11 @@ class MoverFrame < TextFrameBase
       file_names_txt.value = cleaner.remove_control_codes
     end
   end
-  
+
   def on_submit_button(event)
     if required_fields_empty?
       log_message error_message
-    elsif target_dir_txt.value.include?(source_dir_txt.value)
+    elsif origin_and_targets_are_same?
       log_message invalid_folder
     else
       prog_bar = ProgressDialog.new('', start_message, 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
@@ -106,9 +106,9 @@ class MoverFrame < TextFrameBase
       MovedFrame.new(self, moved, not_moved).show
     end
   end
-  
+
   private
-  
+
   def bind_events
     evt_button(clean_bt)       {|e| on_clean_button(e)}
     evt_button(save_config_bt) {|e| on_save_config_button(e)}
@@ -118,21 +118,25 @@ class MoverFrame < TextFrameBase
     evt_button(target_dir_bt)  {|e| on_first_choose_button(e)}
     evt_button(second_target_dir_bt) {|e| on_second_choose_button(e)}
   end
-  
+
   def required_fields_empty?
     source_dir_txt.value.empty? || target_dir_txt.value.empty? || file_names_txt.value.empty?
   end
-  
+
   def error_message
     'Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare'
   end
-  
+
   def invalid_folder
     'La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine'
   end
-  
+
   def start_message
     'Inizio spostamento files, per favore attendere...'
+  end
+
+  def origin_and_targets_are_same?
+    FileAdapter.same_dir?(target_dir_txt.value, source_dir_txt.value) or FileAdapter.same_dir?(second_target_dir_txt.value, source_dir_txt.value)
   end
 end
 
