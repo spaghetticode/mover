@@ -61,4 +61,18 @@ describe FileAdapter do
       FileAdapter.same_dir?(target, origin).should be_true
     end
   end
+
+  describe 'tainted?' do
+    it 'should be true when dirs end with slash or backslashes' do
+      ['dir\\', 'dir\/'].each do |dir|
+        FileAdapter.tainted?(dir).should be_true
+      end
+    end
+
+    it 'should be false when dirs end with valid chars' do
+      ['\/pizza', '\\asd'].each do |dir|
+        FileAdapter.tainted?(dir).should be_false
+      end
+    end
+  end
 end

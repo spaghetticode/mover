@@ -30,6 +30,14 @@ module FileAdapter
       target =~ /^#{origin}(\/|$)/
     end
 
+    def tainted?(*dirs)
+      tainted = false
+      dirs.each do |dir|
+        tainted = true if dir =~ /(\\|\/)$/
+      end
+      tainted
+    end
+
     def mswindows?
       RUBY_PLATFORM =~ /mingw32/
     end

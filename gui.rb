@@ -94,7 +94,9 @@ class MoverFrame < TextFrameBase
     if required_fields_empty?
       log_message error_message
     elsif origin_and_targets_are_same?
-      log_message invalid_folder
+      log_message same_folder
+    elsif dirs_tainted?
+      log_message tainted_dirs
     else
       prog_bar = ProgressDialog.new('', start_message, 100, self, PD_APP_MODAL|PD_ELAPSED_TIME)
       files    = FileAdapter.convert(file_names_txt.value)
@@ -127,7 +129,7 @@ class MoverFrame < TextFrameBase
     "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
   end
 
-  def invalid_folder
+  def same_folder
     "La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine"
   end
 
@@ -137,6 +139,14 @@ class MoverFrame < TextFrameBase
 
   def origin_and_targets_are_same?
     FileAdapter.same_dir?(target_dir_txt.value, source_dir_txt.value) or FileAdapter.same_dir?(second_target_dir_txt.value, source_dir_txt.value)
+  end
+
+  def dirs_tainted?
+    FileAdapter.tainted?(target_dir_txt.value, source_dir_txt.value, second_target_dir_txt.value)
+  end
+
+  def tainted_dirs
+    "le directory non sono valide\n(rimuovi gli slash/backslash dalla fine delle directory)"
   end
 end
 
