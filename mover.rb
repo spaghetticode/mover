@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/app_config'
 
 class Mover
   attr_reader :files, :source_dir, :target_dir, :second_target_dir, :moved_count
-  
+
   def initialize(prog_bar, files, source_dir, target_dir, second_target_dir=nil)
     @files      = files
     @prog_bar   = prog_bar
@@ -16,31 +16,31 @@ class Mover
     @moved_count = 0
     @files_count = files.size
   end
-  
+
   def mv
     recursive_mv(source_dir)
   end
-  
+
   def not_moved
     files - @moved_hash.keys
   end
-  
+
   def moved
     @moved_hash.values
   end
-  
+
   private
-  
+
   def remaining_count
     @files_count - @moved_count
   end
-  
+
   def progress_count
     ((100.0 / @files_count) * @moved_count).to_i
   end
-  
+
   def recursive_mv(dir)
-    dir.gsub!('\\', '/') # win fix
+    dir.gsub!('\\', '/') if FileAdapter.mswindows?
     Dir["#{dir}/*"].each do |entry|
       if File.file?(entry)
         basename_without_ext = File.basename(entry).chomp(File.extname(entry))

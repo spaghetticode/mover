@@ -23,7 +23,15 @@ module FileAdapter
     end
 
     def same_dir?(target, origin)
+      if mswindows?
+        target.gsub!('\\', '/')
+        origin.gsub!('\\', '/')
+      end
       target =~ /^#{origin}(\/|$)/
+    end
+
+    def mswindows?
+      RUBY_PLATFORM =~ /mingw32/
     end
   end
 end
