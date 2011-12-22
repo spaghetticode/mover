@@ -121,6 +121,19 @@
       <long name="owns-file">1</long>
       <long name="title-mode">0</long>
       <long name="locked">0</long>
+      <document>
+        <string name="title">"Configurations"</string>
+        <string name="type">"config-data-document"</string>
+        <string name="filename">""</string>
+        <string name="icon-name">""</string>
+        <long name="is-transient">0</long>
+        <long name="owns-file">1</long>
+        <long name="title-mode">0</long>
+        <long name="locked">0</long>
+        <string name="template-name">""</string>
+        <bool name="dirty">1</bool>
+        <long name="makefile-last-written">0</long>
+      </document>
     </document>
   </data>
 
@@ -1108,7 +1121,7 @@
                   <string name="proxy-Data class header filename">""</string>
                   <string name="proxy-Data class manager window">""</string>
                   <string name="proxy-Background colour">""</string>
-                  <string name="proxy-Foreground colour">"008040"</string>
+                  <string name="proxy-Foreground colour">"408000"</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
@@ -1161,7 +1174,7 @@
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">""</string>
-                  <string name="proxy-Label">"rimuovi codice"</string>
+                  <string name="proxy-Label">"rimuovi codici"</string>
                   <bool name="proxy-Default">0</bool>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">""</string>
@@ -1173,7 +1186,7 @@
                   <string name="proxy-Data class header filename">""</string>
                   <string name="proxy-Data class manager window">""</string>
                   <string name="proxy-Background colour">""</string>
-                  <string name="proxy-Foreground colour">"008040"</string>
+                  <string name="proxy-Foreground colour">"004080"</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
