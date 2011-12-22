@@ -124,11 +124,11 @@ class MoverFrame < TextFrameBase
   end
 
   def error_message
-    'Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare'
+    "Devi fornire tutti i dati obbligatori:\ncartella sorgente, destinazione, e file da spostare"
   end
 
   def invalid_folder
-    'La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine'
+    "La cartella di destinazione non è valida:\ndevi scegliere una cartella esterna a quella di origine"
   end
 
   def start_message
