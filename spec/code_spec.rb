@@ -34,7 +34,11 @@ describe Code do
       end
 
       it 'when code format is invalid but there is no control code' do
-        Code.new('DA-01-A-15').should_not be_valid
+        Code.new('DA-01-A-15').should be_valid
+      end
+
+      context 'the code 07-09-T-2' do
+        it { Code.new('07-09-T-2').should be_valid }
       end
     end
 

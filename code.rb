@@ -15,11 +15,11 @@ class Code
   end
 
   def valid?
-    unless @parts.size > 3 and parts_valid?
-      false
+    unless control_code
+      true
     else
-      unless control_code
-        true
+      unless @parts.size > 3 and parts_valid?
+        false
       else
         year_number + month + designer_number + count == control_code
       end
