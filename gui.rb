@@ -1,11 +1,14 @@
+# encoding: utf-8
+#!/usr/bin/env arch -i386 ruby
+
 require 'rubygems'
 require 'wx'
-require 'movable_file'
-require 'mover'
-require 'code'
-require 'cleaner'
-require 'validator'
-require 'main_frame'
+require File.expand_path('../movable_file', __FILE__)
+require File.expand_path('../mover', __FILE__)
+require File.expand_path('../code', __FILE__)
+require File.expand_path('../cleaner', __FILE__)
+require File.expand_path('../validator', __FILE__)
+require File.expand_path('../main_frame', __FILE__)
 include Wx
 
 class MovedFrame < Frame

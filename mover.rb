@@ -1,7 +1,7 @@
 require 'rubygems'
-require File.dirname(__FILE__) + '/movable_file'
-require File.dirname(__FILE__) + '/helpers'
-require File.dirname(__FILE__) + '/app_config'
+require File.expand_path('../movable_file', __FILE__)
+require File.expand_path('../helpers', __FILE__)
+require File.expand_path('../app_config', __FILE__)
 
 class Mover
   attr_reader :files, :source_dir, :target_dir, :second_target_dir, :moved_count
