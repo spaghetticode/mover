@@ -58,9 +58,13 @@ class Code
     month > 0 and month <= 12
   end
 
-  %w[designer year].each do |field|
-    define_method "#{field}_number" do
-      LETTERS.index(send(field)) + 1
+  def year_number
+    LETTERS.index(year) + 1
+  end
+
+  def designer_number
+    designer.split(//).inject 0 do |total, letter|
+      total += LETTERS.index(letter) + 1
     end
   end
 
@@ -70,7 +74,10 @@ class Code
 
   def designer_valid?
     if control_code
-      LETTERS.include?(designer)
+      return false if designer.size > 2
+      designer.split(//).map do |letter|
+        LETTERS.include?(letter)
+      end.uniq == [true]
     else
       true
     end

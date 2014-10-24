@@ -1,14 +1,20 @@
+require 'rubygems'
+require 'pry'
+require File.expand_path('../../code', __FILE__)
+
 describe Code do
   before do
     @invalid = 'A-12-C'
     @with_control_number    = 'D-01-A-8-14'
     @without_control_number = 'D-01-A-15'
+    @with_double_letter     = 'F-01-AB-10-20'
   end
 
   describe 'a code instance' do
     let(:invalid) { Code.new('A-12-C-1-123') }
     let(:valid) { Code.new(@with_control_number) }
     let(:valid_without_control) { Code.new(@without_control_number)}
+    let(:valid_with_double_letter) { Code.new(@with_double_letter)}
 
     describe '#clean' do
       context 'when code has control number' do
@@ -21,6 +27,24 @@ describe Code do
         it 'should return the original code value' do
           valid_without_control.clean.should == @without_control_number
         end
+      end
+    end
+
+    context 'when using a double letter designer' do
+      subject { valid_with_double_letter }
+
+      it { should be_valid }
+
+      it 'has expected designer' do
+        subject.designer.should == 'AB'
+      end
+
+      it 'has valid designer' do
+        subject.should be_designer_valid
+      end
+
+      it 'has expected designer_number' do
+        subject.designer_number.should == 3
       end
     end
 
@@ -60,6 +84,8 @@ describe Code do
 
     describe '#designer_number' do
       it { valid.designer_number.should be_a(Integer) }
+
+      it { valid.designer.should == 'A' }
 
       it 'should be the position of letter in the alphabet' do
         valid.designer_number.should == 1
